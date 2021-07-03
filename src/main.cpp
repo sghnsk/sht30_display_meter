@@ -1,9 +1,8 @@
 #include <Arduino.h>
 #include <SevSeg.h>
-#include <Wire.h>
-#include <SHT31.h>
+#include <SHT3x.h>
 
-SHT31 sht;
+SHT3x sht;
 
 SevSeg sevseg;
 
@@ -14,15 +13,13 @@ void setup() {
     sevseg.begin(COMMON_ANODE, numDigits, digitPins, segmentPins, true);
     sevseg.setBrightness(100);
 
-    Wire.begin();
-    sht.begin(0x44);
-    // Wire.setClock(100000);
+    sht.Begin();
 }
 
 void loop() {
-    sht.read();
-    int temp = sht.getTemperature();
-    int hum = sht.getHumidity();
+    sht.UpdateData();
+    int temp = sht.GetTemperature();
+    int hum = sht.GetRelHumidity();
     char outBuff[8];
     sprintf(outBuff, "%d.%d", temp, hum);
     sevseg.setChars(outBuff);
